@@ -39,8 +39,8 @@ where:
 
 returns Json-object with next fields:
 
-*status* - info about query result. contains may be **Exchange rate is <some 
-value> <currency code> = <some value> BYN"**, **internal server error** 
+*status* - info about query result. contains may be **Exchange rate is {some 
+value} {currency code} = {some value} BYN"**, **internal server error** 
 or **bad request**
 
 *code* - http result code. May be **200**, **500**, **400**.
