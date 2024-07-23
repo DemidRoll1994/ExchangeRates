@@ -1,7 +1,8 @@
 package by.vadarod.test.samtsov.exrates.controller;
 
+import by.vadarod.test.samtsov.exrates.mapper.ExchangeRateMapper;
+import by.vadarod.test.samtsov.exrates.dto.NbrbApiDto;
 import by.vadarod.test.samtsov.exrates.model.BaseResponse;
-import by.vadarod.test.samtsov.exrates.model.ExchangeRate;
 import by.vadarod.test.samtsov.exrates.repo.ExRatesRepository;
 import by.vadarod.test.samtsov.exrates.validator.ParamsValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-public class ExRatesController {
+public class UpdateExRatesController {
 
 
     private static final String SUCCESS_STATUS = "success";
@@ -28,11 +29,11 @@ public class ExRatesController {
     public BaseResponse showStatus(@RequestParam String date,
                                    NbrbApiController exchange) {
         Optional<LocalDate> localDate = ParamsValidator.validateDate(date);
-        List<ExchangeRate> currenciesOnDate;
+        List<NbrbApiDto> currenciesOnDate;
         if (localDate.isPresent()) {
             currenciesOnDate = exchange.onDate(localDate.get());
             if (currenciesOnDate != null && !currenciesOnDate.isEmpty()) {
-                exRatesRepository.saveAll(currenciesOnDate);
+                exRatesRepository.saveAll(ExchangeRateMapper.toExchangeRate(currenciesOnDate));
                 return new BaseResponse(SUCCESS_STATUS, UPLOADED_CODE);
             }
         } else {
@@ -40,22 +41,4 @@ public class ExRatesController {
         }
         return new BaseResponse(ERROR_STATUS, INTERNAL_ERROR_CODE);
     }
-/*
-    @GetMapping("/show")
-    public BaseResponse showStatus2(@RequestParam String date,
-                                    @RequestParam String currency_code) {
-        Optional<LocalDate> localDate = ParamsValidator.validateDate(date);
-        if (localDate.isPresent()) {
-            var exchangeRate = exRatesRepository.findByDateAndCurrencyCode(
-                    localDate.get(), currency_code);
-            if (exchangeRate != null) {
-                return new BaseResponse(exchangeRate.toString(), 200);
-            } else {
-                return new BaseResponse("Internal Server Error", 500);
-            }
-        } else {
-            return new BaseResponse("Bad Request", 400);
-        }
-    }
-*/
 }

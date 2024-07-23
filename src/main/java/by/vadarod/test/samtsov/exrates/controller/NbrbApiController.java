@@ -1,6 +1,6 @@
 package by.vadarod.test.samtsov.exrates.controller;
 
-import by.vadarod.test.samtsov.exrates.model.ExchangeRate;
+import by.vadarod.test.samtsov.exrates.dto.NbrbApiDto;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -11,12 +11,12 @@ import java.util.List;
 
 @Component
 public class NbrbApiController {
-    public List<ExchangeRate> onDate(LocalDate date) {
+    public List<NbrbApiDto> onDate(LocalDate date) {
         RestTemplate restTemplate = new RestTemplate();
-        ExchangeRate[] exRates = restTemplate.getForObject(String.format(
+        NbrbApiDto[] exRates = restTemplate.getForObject(String.format(
                 "https://api.nbrb.by/exrates/rates?ondate=%s&periodicity=0",
-                date.format(DateTimeFormatter.ISO_LOCAL_DATE)), ExchangeRate[].class);
+                date.format(DateTimeFormatter.ISO_LOCAL_DATE)), NbrbApiDto[].class);
         if (exRates == null) throw new AssertionError();
-        return Arrays.stream(exRates).peek(rate->rate.setDate(date)).toList();
+        return Arrays.stream(exRates).toList();
     }
 }
